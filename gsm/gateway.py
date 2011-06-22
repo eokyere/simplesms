@@ -10,18 +10,10 @@ DEFAULT = 'default'
 class Gateway(object):
     """The GSM Gateway itself.
     
-    Provides an incoming queue which is filled with messages coming from 
-    multiple devices, and an outgoing queue which is filled with messages
-    intended to be sent from named or the default device.
-    
-    The data ports of the devices take the incoming queue of the gateway
-    and populate it with incoming messages, as it happens. 
-    
-    Once an incoming message is added to the gateway's incoming queue, the 
-    handle method of all regsitered handlers are called with the message.
+    Provides a queue which is populated with incoming messages, calls and 
+    ussd responses coming from multiple devices, and another queue which is 
+    populated with messages intended to be sent from a named or default device.
     """
-    
-        
     def __init__(self, devices_dict):
         self.incoming = Queue.Queue()
         self._ihandler = None
@@ -29,7 +21,6 @@ class Gateway(object):
         self.interval = 2
         self.devices_dict = devices_dict
         self.devices = devices_dict.values()
-        print 'Devices: %s\n' % self.devices
         self.default_device = devices_dict.get(DEFAULT) or self.devices[0]
 
     def add_handler(self, handler):
@@ -44,7 +35,6 @@ class Gateway(object):
         
     def start(self):
         """Start the gateway."""
-        print '>>>>>>>>>>>> starting gateway ...'
         self._ihandler = GatewayIncomingHandler(queue=self.incoming,
                                                 gateway=self)
         
@@ -74,7 +64,6 @@ class GatewayIncomingHandler(threading.Thread):
 
     def run(self):
         """Keep handling messages while active attribute is set."""
-        print 'Running ...................'
         while self.active:
             print '>>> Handling gateway incoming queue ...'
             try:
