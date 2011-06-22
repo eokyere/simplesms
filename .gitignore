@@ -1,0 +1,8 @@
+*.pyc
+env/
+.pydevproject
+.project
+tmp/
+pact.sqlite3
+doc/
+build/
