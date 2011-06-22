@@ -65,7 +65,8 @@ class Modem(GsmModem):
 
     def start(self, incoming_queue=None):
         if not self._ihandler:
-            self._ihandler = IncomingHandler(self, incoming_queue)
+            self._incoming = incoming_queue
+            self._ihandler = IncomingHandler(self, self._incoming)
             self._ohandler = OutgoingHandler(self, self._outgoing)
             self._ihandler.start()
             self._ohandler.start()
@@ -87,7 +88,7 @@ class Modem(GsmModem):
         m = patterns.CALLER_ID.search(message)
         print '>>>>> "%s" is calling on port: %s' % (m.group(1), port)
         #TODO: propagate this up
-        #self._incoming.put(('call', t, m.group(1)))
+        self._incoming.put(('call', (t, m.group(1))))
 
 
     def send_ussd(self, ussd=None, pdu=None, read_term=None, read_timeout=10, 
@@ -260,7 +261,7 @@ class IncomingHandler(threading.Thread):
                 message = self.modem.next_message()
                 if message is not None:
                     print 'We got a message: %s' % message
-                    self.queue.put(message)
+                    self.queue.put(('sms', message))
             except KeyboardInterrupt:
                 print 'Ctrl-c received! Sending kill signal ...'
                 self.stop()

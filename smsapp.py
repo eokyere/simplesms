@@ -15,10 +15,15 @@ class Application(object):
         self.gateway = gateway
         gateway.add_handler(self)
     
-    def handle(self, message):
-        sender = message.sender
-        text = message.text
-        print 'We received [%s] from %s' % (text, sender)
+    def handle(self, kind, data):
+        if 'sms' is kind:
+            message = data
+            sender = message.sender
+            text = message.text
+            print 'We received [%s] from %s' % (text, sender)
+        elif 'call' is kind:
+            t, number = data
+            print 'We received a call from %s at %s' % (number, t)
     
     def send(self, number, text): 
         self.gateway.send(number, text)
@@ -50,9 +55,6 @@ def get_huawei_devices(id1='Airtel', id2='MTN'):
     devices = [(id1,
                 '/dev/cu.HUAWEIMobile-Modem',
                 '/dev/cu.HUAWEIMobile-Pcui',)]
-#             (id2,
-#              '/dev/cu.HUAWEIMobile-80',
-#              '/dev/cu.HUAWEIMobile-81')]
     xs = ['/dev/%s' % x for x in os.listdir('/dev/') \
           if re.match(r'cu.HUAWEI.*-\d+', x)][:2]
     if xs:

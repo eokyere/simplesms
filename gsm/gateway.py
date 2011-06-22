@@ -78,10 +78,9 @@ class GatewayIncomingHandler(threading.Thread):
         while self.active:
             print '>>> Handling gateway incoming queue ...'
             try:
-                message = self.queue.get()
-                print '>>> Received a new message on gateway [%s]' % message
+                kind, data = self.queue.get()
                 for handler in self.gateway.handlers:
-                    handler.handle(message)
+                    handler.handle(kind, data)
             except KeyboardInterrupt:
                 self.stop() 
             finally:
