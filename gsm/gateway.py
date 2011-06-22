@@ -21,14 +21,15 @@ class Gateway(object):
     handle method of all regsitered handlers are called with the message.
     """
     
-    handlers = []
-    interval = 2
-    incoming = Queue.Queue()
-    _ihandler = None
         
     def __init__(self, devices_dict):
+        self.incoming = Queue.Queue()
+        self._ihandler = None
+        self.handlers = []
+        self.interval = 2
         self.devices_dict = devices_dict
         self.devices = devices_dict.values()
+        print 'Devices: %s\n' % self.devices
         self.default_device = devices_dict.get(DEFAULT) or self.devices[0]
 
     def add_handler(self, handler):
@@ -43,10 +44,13 @@ class Gateway(object):
         
     def start(self):
         """Start the gateway."""
-        self._ihandler = IncomingHandler(queue=self.incoming,
-                                         gateway=self)
+        print '>>>>>>>>>>>> starting gateway ...'
+        self._ihandler = GatewayIncomingHandler(queue=self.incoming,
+                                                gateway=self)
+        
         for modem in self.devices:
             modem.start(incoming_queue=self.incoming)
+        self._ihandler.start()
 
     def stop(self):
         """Remove all pending tasks and stop the Gateway."""
@@ -59,26 +63,29 @@ class Gateway(object):
         return self.devices_dict.get(key)
     
 
-class IncomingHandler(threading.Thread):
-    """IncomingHandler thread."""
-    def __init__(self, queue, gateway, interval=1):
+class GatewayIncomingHandler(threading.Thread):
+    """GatewayIncomingHandler thread."""
+    def __init__(self, queue, gateway, interval=2):
         self.gateway = gateway
         self.queue = queue
         self.active = True
         self.interval = interval
         threading.Thread.__init__(self)
+        print '>>>>>>>>>>> wohoooo'
 
     def run(self):
         """Keep handling messages while active attribute is set."""
+        print 'Running ...................'
         while self.active:
+            print '>>>>>>>>>>>>>>> Handling .......'
             try:
-                print 'trying now .....'
+                print '>>>>>>>>>>  Trying now .....'
                 message = self.queue.get()
-                print 'Received a new message'
+                print '>>>>>>>>>>>>>>>>>>   Received a new message'
                 for handler in self.gateway.handlers:
                     handler.handle(message)
-            except KeyboardInterrupt:
-                self.stop() 
+#            except KeyboardInterrupt:
+#                self.stop() 
             finally:
                 time.sleep(self.interval)
 

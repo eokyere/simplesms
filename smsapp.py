@@ -7,7 +7,7 @@ import random
 from gsm import Modem
 from gsm import Gateway
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from kronos import method, ThreadedScheduler
 
 class Application(object):
@@ -35,13 +35,29 @@ def connect_devices(options):
     logger = Modem.debug_logger
     airtel = Modem(port=options.port or '/dev/cu.HUAWEIMobile-Modem',
                    control_port='/dev/cu.HUAWEIMobile-Pcui',
-                   logger=logger).boot()
-    return {'airtel': airtel}
+                   logger=logger,
+                   id='Airtel').boot()
+                   
+    mtn = Modem(port='/dev/cu.HUAWEIMobile-71',
+                control_port='/dev/cu.HUAWEIMobile-72',
+                logger=logger,
+                id='MTN').boot()
+    
+    for m in [mtn, airtel]:
+        m.clear_read_messages()
+
+    # e160 specific configuration
+#    for cmd in ["ATQ0 V1 E1 S0=0 &C1 &D2 +FCLASS=0",
+#                "AT+CNMI= 2,0,0,2,0"
+#                ]:
+#        mtn.command(cmd, raise_errors=False)            
+    
+    return {'airtel': airtel, 'mtn': mtn}
 
 def send_messages(app, n=5, test_phone='0266688206'):
-    MSGS = ['hello', 'how are you', 'you are the man', 'wohoo']
-    for i in range(n):
-        app.send(test_phone, MSGS[random.randint(0, len(MSGS) - 1)])
+    xs = ['hello', 'how are you', 'wikid!', 'wohoo', 'got it!']
+    for s in [xs[random.randint(0, len(xs) - 1)] for i in range(n)]:
+        app.send(test_phone, s)
 
 def setup_random_messages(app):
     scheduler = ThreadedScheduler()
@@ -54,14 +70,16 @@ def setup_random_messages(app):
                                    processmethod=method.threaded, 
                                    timeonday=timeonday,
                                    args=args, kw=None)
-    
-    schedule = list(set([(4,random.randint(37, 40)) for i in range(10)]))
-    for count, timeonday in [(random.randint(1, 4), x) for x in schedule]:
+    now = datetime.now()
+    schedule = set([now + timedelta(minutes=random.randint(1, 10)) \
+                    for i in range(10)])
+    for count, t in [(random.randint(1, 4), (t.hour, t.minute)) \
+                     for t in schedule]:
         add_task('send messages',
                  action=send_messages,
-                 timeonday=timeonday,
+                 timeonday=t,
                  args=[app, count, '0263119161'])
-        print 'Added task with %s msgs for %s' % (count, list(timeonday))
+        print 'Added task with %s msgs for %s' % (count, list(t))
     return scheduler
     
 def main():
@@ -73,10 +91,10 @@ def main():
     p.add_option('--clear_messages', '-c', default=None) 
     options, arguments = p.parse_args() 
     modems, gateway, app = bootstrap(options)
-    scheduler = setup_random_messages(app)
+#    scheduler = setup_random_messages(app)
     
     gateway.start()
-    scheduler.start()
+#    scheduler.start()
     
 
 #    app.send('432', '2u 0263119161 0.5 1234')
