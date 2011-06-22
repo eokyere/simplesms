@@ -33,26 +33,31 @@ def bootstrap(options):
 def connect_devices(options):
     # setup modem(s)
     logger = Modem.debug_logger
-    airtel = Modem(port=options.port or '/dev/cu.HUAWEIMobile-Modem',
-                   control_port='/dev/cu.HUAWEIMobile-Pcui',
-                   logger=logger,
-                   id='Airtel').boot()
-                   
-    mtn = Modem(port='/dev/cu.HUAWEIMobile-71',
-                control_port='/dev/cu.HUAWEIMobile-72',
-                logger=logger,
-                id='MTN').boot()
     
-    for m in [mtn, airtel]:
-        m.clear_read_messages()
+    d = {}
+    devices = get_huawei_devices()
+    for id, data_port, control_port in devices:
+        modem = Modem(id=id,
+                      port=data_port,
+                      control_port=control_port,
+                      logger=logger).boot()
+        d.update({id:modem})
+    return d
 
-    # e160 specific configuration
-#    for cmd in ["ATQ0 V1 E1 S0=0 &C1 &D2 +FCLASS=0",
-#                "AT+CNMI= 2,0,0,2,0"
-#                ]:
-#        mtn.command(cmd, raise_errors=False)            
-    
-    return {'airtel': airtel, 'mtn': mtn}
+def get_huawei_devices(id1='Airtel', id2='MTN'):
+    import re
+    import os
+    devices = [(id1,
+                '/dev/cu.HUAWEIMobile-Modem',
+                '/dev/cu.HUAWEIMobile-Pcui',)]
+#             (id2,
+#              '/dev/cu.HUAWEIMobile-80',
+#              '/dev/cu.HUAWEIMobile-81')]
+    xs = ['/dev/%s' % x for x in os.listdir('/dev/') \
+          if re.match(r'cu.HUAWEI.*-\d+', x)][:2]
+    if xs:
+        devices.append((id2, xs[0], xs[1]))
+    return devices
 
 def send_messages(app, n=5, test_phone='0266688206'):
     xs = ['hello', 'how are you', 'wikid!', 'wohoo', 'got it!']

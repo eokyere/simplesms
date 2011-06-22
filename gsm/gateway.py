@@ -71,21 +71,19 @@ class GatewayIncomingHandler(threading.Thread):
         self.active = True
         self.interval = interval
         threading.Thread.__init__(self)
-        print '>>>>>>>>>>> wohoooo'
 
     def run(self):
         """Keep handling messages while active attribute is set."""
         print 'Running ...................'
         while self.active:
-            print '>>>>>>>>>>>>>>> Handling .......'
+            print '>>> Handling gateway incoming queue ...'
             try:
-                print '>>>>>>>>>>  Trying now .....'
                 message = self.queue.get()
-                print '>>>>>>>>>>>>>>>>>>   Received a new message'
+                print '>>> Received a new message on gateway [%s]' % message
                 for handler in self.gateway.handlers:
                     handler.handle(message)
-#            except KeyboardInterrupt:
-#                self.stop() 
+            except KeyboardInterrupt:
+                self.stop() 
             finally:
                 time.sleep(self.interval)
 

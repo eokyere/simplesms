@@ -66,19 +66,18 @@ class Modem(GsmModem):
     def start(self, incoming_queue=None):
         if not self._ihandler:
             self._ihandler = IncomingHandler(self, incoming_queue)
-            self._ihandler.start()
             self._ohandler = OutgoingHandler(self, self._outgoing)
+            self._ihandler.start()
             self._ohandler.start()
         else:
             raise 'Already started'
-        
         print '%s started!!!!' % self
     
     def stop(self):
         if self._ihandler:
             self._ihandler.stop()
-            self._ihandler = None
             self._ohandler.stop()
+            self._ihandler = None
             self._ohandler = None
         else:
             raise 'Not started'
@@ -86,9 +85,9 @@ class Modem(GsmModem):
     def _caller_id(self, port, message):
         t = datetime.now()
         m = patterns.CALLER_ID.search(message)
-        print '"%s" is calling on port: %s' % (m.group(1), port)
+        print '>>>>> "%s" is calling on port: %s' % (m.group(1), port)
         #TODO: propagate this up
-        self._incoming.put(('call', t, m.group(1)))
+        #self._incoming.put(('call', t, m.group(1)))
 
 
     def send_ussd(self, ussd=None, pdu=None, read_term=None, read_timeout=10, 
@@ -221,14 +220,14 @@ class OutgoingHandler(threading.Thread):
     def run(self):
         """Keep handling messages while active attribute is set."""
         while self.active:
-            print 'Handling ...'
+            print 'Handling outgoing messages on %s ...' % self.modem
             try:
-                print 'trying now .....'
                 kind, data = self.queue.get()
-                print 'got some data'
-                self.modem.wait_for_network()
+                print '<Network %s CSQ: %s>' % (self.modem.id,
+                                                self.modem.wait_for_network())
                 if 'sms' is kind:
                     number, text = data
+                    # can i just say *args?
                     self.modem.send_sms(number, text)
                 elif 'ussd' is kind:
                     raise 'Not implemented yet'
@@ -255,7 +254,9 @@ class IncomingHandler(threading.Thread):
         """Keep handling messages while active attribute is set."""
         while self.active:
             try:
-                print '%s: Checking for next message...' % self.modem
+                print '<Network %s CSQ: %s>' % (self.modem.id,
+                                                self.modem.wait_for_network())
+                print 'Checking for incoming message on %s ...' % self.modem
                 message = self.modem.next_message()
                 if message is not None:
                     print 'We got a message: %s' % message
