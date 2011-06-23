@@ -37,8 +37,8 @@ def main():
 
 # __init__.py
 
-from gsm import Modem
-from gsm import Gateway
+from gsmio import Modem
+from gsmio import Gateway
 
 
 def bootstrap(options):

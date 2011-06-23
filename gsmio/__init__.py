@@ -5,4 +5,4 @@
 
 from modem import Modem
 from gateway import Gateway
-__doc__ = Modem.__doc__
+#__doc__ = Modem.__doc__

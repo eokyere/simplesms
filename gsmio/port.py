@@ -1,5 +1,4 @@
 """This module defines the Port classes.
-
 """
 
 __author__ = 'Emmanuel Okyere <chief@hutspace.net>'
@@ -10,11 +9,11 @@ import threading
 import Queue
 
 import serial
-
-from gsm import patterns
-from gsm import settings
-
 from pygsm import errors
+
+from gsmio import patterns
+from gsmio import settings
+
 
 class Port(object):
     _port = None
