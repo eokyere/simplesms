@@ -23,13 +23,12 @@ def main():
     
     p = optparse.OptionParser() 
     p.add_option('--port', '-p', default=None) 
-    p.add_option('--clear_messages', '-c', default=None) 
     options, arguments = p.parse_args() 
     
     modems, gateway = bootstrap(options)
     gateway.start()
     app = Application(gateway)
-    app.send(ussd='*133#')
+    app.send(modem_id='Airtel', ussd='*133#')
 #    scheduler = setup_random_messages(app)
 #    scheduler.start()
 #    app.send('432', '2u 0263119161 0.5 1234')

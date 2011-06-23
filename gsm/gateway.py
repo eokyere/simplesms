@@ -26,11 +26,11 @@ class Gateway(object):
     def add_handler(self, handler):
         self.handlers.append(handler)
 
-    def send(self, number=None, text=None, ussd=None, modem=DEFAULT):
+    def send(self, number=None, text=None, ussd=None, modem_id=DEFAULT):
         if number and text:
-            self.get_modem(modem).send(number, text)
+            self.get_modem(modem_id).send(number, text)
         elif ussd:
-            self.get_modem(modem).send(ussd=ussd)
+            self.get_modem(modem_id).send(ussd=ussd)
         else:
             raise 'Invalid'
 
