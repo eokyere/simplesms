@@ -5,13 +5,6 @@ CONTROL_PORT = '/dev/cu.HUAWEIMobile-Pcui'
 CONTROL_PORT_TIMEOUT = 0.5
 BAUDRATE = '115200'
 
-DIALNUM = '*99#'
-
-PPPD_PATH = '/usr/sbin/pppd'
-PPPD_PARAMS = ['modem', 'crtscts', 'defaultroute', 'usehostname', '-detach',
-               'noipdefault', 'call', 'humod', 'user', 'ppp', 'usepeerdns',
-               'idle', '0', 'logfd', '8']
-
 import os
 if os.name == 'posix':
     if 'linux' in os.sys.platform:

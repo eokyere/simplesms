@@ -26,8 +26,13 @@ class Gateway(object):
     def add_handler(self, handler):
         self.handlers.append(handler)
 
-    def send(self, number, text, modem=DEFAULT):
-        self.get_modem(modem).send(number, text)
+    def send(self, number=None, text=None, ussd=None, modem=DEFAULT):
+        if number and text:
+            self.get_modem(modem).send(number, text)
+        elif ussd:
+            self.get_modem(modem).send(ussd=ussd)
+        else:
+            raise 'Invalid'
 
     def clear_read_messages(self):
         for modem in self.devices:
@@ -65,11 +70,15 @@ class GatewayIncomingHandler(threading.Thread):
     def run(self):
         """Keep handling messages while active attribute is set."""
         while self.active:
-            print '>>> Handling gateway incoming queue ...'
             try:
                 kind, data = self.queue.get()
                 for handler in self.gateway.handlers:
-                    handler.handle(kind, data)
+                    if 'sms' is kind:
+                        handler.handle_sms(data)
+                    elif 'call' is kind:
+                        handler.handle_call(*data)
+                    elif 'ussd_response' is kind:
+                        handler.handle_ussd_response(*data)
             except KeyboardInterrupt:
                 self.stop() 
             finally:

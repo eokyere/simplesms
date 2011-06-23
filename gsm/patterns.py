@@ -2,6 +2,7 @@ import re
 
 INCOMING_CALL = re.compile(r'^RING\r\n')
 CALLER_ID = re.compile(r'^\+CLIP: "\+?(\d+)",(\d+).*') 
+USSD_RESPONSE = re.compile(r'^\+CUSD: (\d)(,".+")?(,\d+)?') 
 SMS_RECEIVED = re.compile(r'^\+CMTI:.*')
 RSSI_UPDATE = re.compile(r'^\^RSSI:.*')
 FLOW_REPORT = re.compile(r'^\^DSFLOWRPT:')
@@ -20,7 +21,7 @@ def caller_id(port, message):
     #+CLIP: "0266688206",129,,,,0
     #+CLIP: <number>, <type>[ ,<subaddr>, <satype>, <alpha> ]
     m = CALLER_ID.search(message)
-    print '"%s" is calling on port: %s' % (m.group(1), port)
+    print 'CLIP: <%s> is calling on port %s' % (m.group(1), port)
 
 DEFAULT_HANDLERS = [
     (INCOMING_CALL, hello),

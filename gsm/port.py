@@ -1,6 +1,5 @@
 """This module defines the Port classes.
 
-
 """
 
 __author__ = 'Emmanuel Okyere <chief@hutspace.net>'
