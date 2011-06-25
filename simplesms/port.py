@@ -11,8 +11,8 @@ import Queue
 import serial
 from pygsm import errors
 
-from gsmio import patterns
-from gsmio import settings
+from simplesms import patterns
+from simplesms import settings
 
 
 class Port(object):

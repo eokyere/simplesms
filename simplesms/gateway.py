@@ -14,7 +14,7 @@ class Gateway(object):
     ussd responses coming from multiple devices, and another queue which is 
     populated with messages intended to be sent from a named or default device.
     """
-    def __init__(self, devices_dict):
+    def __init__(self, default_device, devices_dict):
         self.incoming = Queue.Queue()
         self._ihandler = None
         self.handlers = []
@@ -57,6 +57,25 @@ class Gateway(object):
             return self.default_device
         return self.devices_dict.get(key)
     
+
+class Handler(object):
+
+    def __init__(self, gateway):
+        self.gateway = gateway
+        gateway.add_handler(self)
+
+    def send(self, *args, **kwargs): 
+        self.gateway.send(*args, **kwargs)
+    
+    def handle_sms(self, message):
+        pass
+    
+    def handle_call(self, modem_id, caller, dt):
+        print 'We received a call on %s from %s at %s' % (modem_id, caller, dt)
+    
+    def handle_ussd_response(self, modem_id, response, code, dcs):
+        print '>>> USSD RESPONSE (%s): %s' % (modem_id, response)
+        
 
 class GatewayIncomingHandler(threading.Thread):
     """GatewayIncomingHandler thread."""

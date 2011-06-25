@@ -11,9 +11,9 @@ from pygsm import GsmModem
 from pygsm import errors
 
 
-from gsmio import port
-from gsmio import patterns
-from gsmio import pdu as gsmpdu
+from simplesms import port
+from simplesms import patterns
+from simplesms import pdu as gsmpdu
 
 
 class Modem(GsmModem):
