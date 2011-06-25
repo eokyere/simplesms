@@ -14,9 +14,7 @@ setup(name = 'simplesms',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
           'Operating System :: OS Independent',
-          'Programming Language :: Python',
-          'Topic :: Communications :: SMS',
-          'Topic :: Office/Business'],
+          'Programming Language :: Python'],
       long_description= """
       
       """,
