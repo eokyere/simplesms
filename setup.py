@@ -8,14 +8,14 @@ setup(name = 'simplesms',
       description = 'Build SMS apps on top of a simple SMS/USSD gateway',
       packages = ['simplesms', 'simplesms.contrib'],
       keywords = ['gsm', 'sms', 'communication'],
-      classifiers=[
+      classifiers = [
           'Development Status :: 3 - Alpha',
           'Environment :: Other Environment',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
           'Operating System :: OS Independent',
           'Programming Language :: Python'],
-      long_description= """
+      long_description = """
       
       """,
-          )
+      install_requires = ['phonenumbers==3.5b2'],)

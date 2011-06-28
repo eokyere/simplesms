@@ -14,14 +14,15 @@ class Gateway(object):
     ussd responses coming from multiple devices, and another queue which is 
     populated with messages intended to be sent from a named or default device.
     """
-    def __init__(self, default_device, devices_dict):
+    def __init__(self, devices_dict, default_device=None):
         self.incoming = Queue.Queue()
         self._ihandler = None
         self.handlers = []
         self.interval = 2
         self.devices_dict = devices_dict
         self.devices = devices_dict.values()
-        self.default_device = devices_dict.get(DEFAULT) or self.devices[0]
+        self.default_device = default_device or \
+                              devices_dict.get(DEFAULT) or self.devices[0]
 
     def add_handler(self, handler):
         self.handlers.append(handler)
@@ -38,14 +39,16 @@ class Gateway(object):
         for modem in self.devices:
             modem.clear_read_messages(debug=True)
         
-    def start(self):
+    def start(self, clear_messages=False):
         """Start the gateway."""
         self._ihandler = GatewayIncomingHandler(queue=self.incoming,
                                                 gateway=self)
-        
         for modem in self.devices:
             modem.start(incoming_queue=self.incoming)
+        if clear_messages:
+            self.clear_read_messages()
         self._ihandler.start()
+        
 
     def stop(self):
         """Remove all pending tasks and stop the Gateway."""

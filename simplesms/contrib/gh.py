@@ -14,8 +14,7 @@ NETWORK_MAP = {'026': AIRTEL,
                '057': TIGO,
                '028': EXPRESSO}
 
-MESSAGES = ['Better Ghana', 'Vote for development',
-            'Be bold ;)']
+MESSAGES = ['Better Ghana', 'Vote for development', 'Be bold ;)']
 
 def network (phone_number):
     if phone_number.startswith('+233'):
