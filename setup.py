@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name = 'simplesms',
-      version = '0.1.0',
+      version = '0.1.1',
       author = 'Emmanuel Okyere',
       author_email = 'chief@hutspace.net',
       url = 'http://github.com/eokyere/simplesms',
