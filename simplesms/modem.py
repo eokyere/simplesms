@@ -163,7 +163,7 @@ class OutgoingHandler(threading.Thread):
 
 class IncomingHandler(threading.Thread):
     """ControlPortHandler thread."""
-    def __init__(self, modem, queue, interval=2):
+    def __init__(self, modem, queue, interval=5):
         self.modem = modem
         self.queue = queue
         self.interval = interval

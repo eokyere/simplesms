@@ -1,1 +1,1 @@
-Simple SMS gateway
+Simple SMS/USSD gateway
