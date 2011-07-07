@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name = 'simplesms',
-      version = '0.1.1',
+      version = '0.1.2',
       author = 'Emmanuel Okyere',
       author_email = 'chief@hutspace.net',
       url = 'http://github.com/eokyere/simplesms',
@@ -18,4 +18,4 @@ setup(name = 'simplesms',
       long_description = """
       
       """,
-      install_requires = ['phonenumbers==3.5b2'],)
+      install_requires = ['phonenumbers==3.5b2', 'pyserial', 'pygsm'],)

@@ -25,7 +25,7 @@ class Modem(GsmModem):
     def __init__(self, *args, **kwargs):
         if 'control_port' in kwargs:
             control_port = kwargs.pop('control_port')
-            self._control = port.ControlPort()
+            self._control = port.ControlPort(port=control_port)
             self._control.connect(handlers=[(patterns.CALLER_ID, 
                                              self._caller_id),
                                              (patterns.USSD_RESPONSE,
