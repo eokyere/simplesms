@@ -36,11 +36,11 @@ Installing simplesms
 
 To setup an instance of simplesms in a clean virtualenv (named env):
 
-	$ virtualenv env --no-site-packages --python=python2.6
-	$ source env/bin/activate
-	$ pip install pytz
-	$ pip install git+git://github.com/eokyere/pygsm.git#egg=pygsm
-	$ pip install simplesms
+  $ virtualenv env --no-site-packages --python=python2.6
+  $ source env/bin/activate
+  $ pip install pytz
+  $ pip install git+git://github.com/eokyere/pygsm.git#egg=pygsm
+  $ pip install simplesms
 	
 
 Using simplesms
