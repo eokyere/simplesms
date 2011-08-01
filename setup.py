@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name = 'simplesms',
-      version = '0.1.3a',
+      version = '0.1.3b',
       license = 'MIT',
       url = 'http://github.com/eokyere/simplesms',
       description = 'Build SMS apps on top of a simple SMS/USSD gateway',
