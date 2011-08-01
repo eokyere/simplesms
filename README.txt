@@ -34,7 +34,7 @@ Dependencies
 Installing simplesms
 ====================
 
-To setup an instance of simplesms in a clean virtualenv (named env):
+To setup an instance of simplesms in a clean virtualenv (named env)::
 
   $ virtualenv env --no-site-packages --python=python2.6
   $ source env/bin/activate
